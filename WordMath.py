@@ -1,4 +1,6 @@
 import os
+import ast
+import operator
 import pystray
 from PIL import Image, ImageDraw
 import tkinter as tk
@@ -13,19 +15,42 @@ import threading
 # Global variable to store the current hotkey
 current_hotkey = 'ctrl+alt+m'
 HOTKEY_FILE = "hotkey.txt"  # File to save the hotkey
+SUPPORTED_OPERATORS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.USub: operator.neg,
+    ast.UAdd: operator.pos,
+}
 
 def evaluate_math_expression(expression):
     """Evaluate a math expression and return the result."""
     try:
-        expression = expression.replace("x", "*").replace(",", "")
-        result = eval(expression)
-        return result
+        expression = expression.replace("x", "*").replace("X", "*").replace(",", "")
+        parsed_expression = ast.parse(expression, mode="eval")
+        return evaluate_ast_node(parsed_expression.body)
     except Exception as e:
         print(f"Error evaluating expression: {e}")
         return None
 
+def evaluate_ast_node(node):
+    """Evaluate a parsed math expression while allowing only basic operators."""
+    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+        return node.value
+    if isinstance(node, ast.BinOp) and type(node.op) in SUPPORTED_OPERATORS:
+        left = evaluate_ast_node(node.left)
+        right = evaluate_ast_node(node.right)
+        return SUPPORTED_OPERATORS[type(node.op)](left, right)
+    if isinstance(node, ast.UnaryOp) and type(node.op) in SUPPORTED_OPERATORS:
+        value = evaluate_ast_node(node.operand)
+        return SUPPORTED_OPERATORS[type(node.op)](value)
+    raise ValueError("Only numbers and +, -, x, *, /, and parentheses are supported")
+
 def format_number_with_commas(number):
     """Format a number with commas as thousand separators."""
+    if isinstance(number, float) and number.is_integer():
+        number = int(number)
     return locale.format_string("%d", number, grouping=True) if isinstance(number, int) else locale.format_string("%.2f", number, grouping=True)
 
 def process_line_in_word():
@@ -123,7 +148,10 @@ def create_gui():
 def main():
     global current_hotkey
 
-    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    try:
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    except locale.Error:
+        locale.setlocale(locale.LC_ALL, '')
 
     # Load the saved hotkey or use the default
     current_hotkey = load_hotkey_from_file()
