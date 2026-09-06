@@ -1,6 +1,6 @@
 # Word-Math
 
-Word-Math is a small Windows tray utility that evaluates arithmetic directly inside Microsoft Word. Type an expression on a line, end it with `=`, press the configured hotkey, and Word-Math replaces the line with the solved result.
+I built Word-Math as a small Windows tray utility that evaluates arithmetic directly inside Microsoft Word. I can type an expression on a line, end it with `=`, press the configured hotkey, and Word-Math replaces the line with the solved result.
 
 ![Word-Math utility interface](media/WordMathPrettyPic.png)
 
@@ -69,7 +69,7 @@ Supported examples:
 
 ## Notes
 
-Word-Math only evaluates basic arithmetic. It intentionally blocks Python code execution and unsupported expression types.
+Word-Math only evaluates basic arithmetic. I intentionally block Python code execution and unsupported expression types.
 
 The app communicates with Word through the Windows COM interface, so it must run on a Windows machine with Microsoft Word installed.
 
@@ -79,4 +79,4 @@ Portfolio page: [WordMath Macro](https://wchowellarchive.web.app/Projects/WordMa
 
 ## Status
 
-This is an early utility project. Future improvements could include packaging as a Windows executable, adding tests, supporting selected text, and improving the tray settings interface.
+This is an early utility project. Future improvements could include packaging it as a Windows executable, adding tests, supporting selected text, and improving the tray settings interface.
