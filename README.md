@@ -76,7 +76,3 @@ The app communicates with Word through the Windows COM interface, so it must run
 ## Portfolio
 
 Portfolio page: [WordMath Macro](https://wchowellarchive.web.app/Projects/WordMathMacro/WordMath.html)
-
-## Status
-
-This is an early utility project. Future improvements could include packaging it as a Windows executable, adding tests, supporting selected text, and improving the tray settings interface.
